@@ -10,7 +10,9 @@ import javax.swing.JOptionPane;
  *
  * @author Admin
  */
-public class FindTransactionByID extends javax.swing.JPanel {
+public class FindTransactionByID extends javax.swing.JPanel implements TransactionTypeServiceAware {
+
+    private TransactionTypeService transactionTypeService;
 
     /**
      * Creates new form FindTransactionByID
@@ -18,6 +20,11 @@ public class FindTransactionByID extends javax.swing.JPanel {
     public FindTransactionByID() {
         initComponents();
         resultModal.setVisible(false);
+    }
+
+    @Override
+    public void setTransactionTypeService(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
     }
 
     /**
@@ -39,6 +46,7 @@ public class FindTransactionByID extends javax.swing.JPanel {
         transTypeTxt = new javax.swing.JLabel();
         dscTxt = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         searchBtn = new test.CustomButton();
 
         setBackground(new java.awt.Color(0, 119, 204));
@@ -85,31 +93,39 @@ public class FindTransactionByID extends javax.swing.JPanel {
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("None");
 
+        jLabel2.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Transaction Details: ");
+
         javax.swing.GroupLayout resultModalLayout = new javax.swing.GroupLayout(resultModal);
         resultModal.setLayout(resultModalLayout);
         resultModalLayout.setHorizontalGroup(
             resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(resultModalLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(resultModalLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transTypeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(resultModalLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dscTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(resultModalLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(resultModalLayout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(transTypeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(resultModalLayout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(dscTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(resultModalLayout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jLabel2))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         resultModalLayout.setVerticalGroup(
             resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(resultModalLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(resultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(transTypeTxt))
@@ -131,7 +147,7 @@ public class FindTransactionByID extends javax.swing.JPanel {
         searchBtn.setColor(new java.awt.Color(0, 51, 0));
         searchBtn.setColorClick(new java.awt.Color(4, 20, 1));
         searchBtn.setColorOver(new java.awt.Color(0, 102, 0));
-        searchBtn.setFont(new java.awt.Font("Poppins Medium", 1, 12)); // NOI18N
+        searchBtn.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
         searchBtn.setRadius(10);
         searchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,39 +160,35 @@ public class FindTransactionByID extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(resultModal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(121, 121, 121))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addComponent(transLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(findIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(146, 146, 146)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(transLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(findIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(resultModal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(transLabel)
-                    .addComponent(findIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(transLabel)
+                            .addComponent(findIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(searchBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(resultModal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(23, 23, 23))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -184,69 +196,50 @@ public class FindTransactionByID extends javax.swing.JPanel {
         // TODO add your handling code here:
         MouseClick.playNotificationSound();
         // Validate input
-        if (findIDTxt.getText().trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please enter a Transaction ID to search");
+        String input = findIDTxt.getText().trim();
+        if (input.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a Transaction Type ID to search", "Input Required", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         // Validate that input is a number
         int transactionId;
         try {
-            transactionId = Integer.parseInt(findIDTxt.getText().trim());
+            transactionId = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid numeric Transaction ID");
+            JOptionPane.showMessageDialog(this, "Please enter a valid numeric Transaction Type ID", "Invalid Input", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // Search for transaction in database
+        // Search for transaction using service
         searchTransaction(transactionId);
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void searchTransaction(int transactionId) {
-        java.sql.Connection connection = null;
-        java.sql.PreparedStatement pstmt = null;
-        java.sql.ResultSet rs = null;
-
         try {
-            connection = DbConnection.connectToDb();
-
-            if (connection == null) {
-                JOptionPane.showMessageDialog(this, "Database connection failed!");
+            // Check if service is available
+            if (transactionTypeService == null) {
+                JOptionPane.showMessageDialog(this, "Transaction service is not available.", "Service Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Query to get transaction type, description (remarks), and cost
-            String query = "SELECT "
-                    + "tt.TypeName, "
-                    + "tt.Description, "
-                    + "tt.DefaultCost "
-                    + "FROM transactiontype tt "
-                    + "WHERE tt.TypeID = ?";
+            // Use service to fetch transaction type
+            TransactionType type = transactionTypeService.getTransactionType(transactionId);
 
-            pstmt = connection.prepareStatement(query);
-            pstmt.setInt(1, transactionId);
-            rs = pstmt.executeQuery();
+            if (type != null) {
+                // Transaction found - populate the result modal
+                transTypeTxt.setText(type.getTypeName() != null ? type.getTypeName() : "Unknown Type");
+                dscTxt.setText(type.getDescription() != null && !type.getDescription().trim().isEmpty() ? type.getDescription() : "No description");
 
-            if (rs.next()) {
-                // Transaction found - populate the result modal with only the 3 fields
-
-                String typeName = rs.getString("TypeName");
-                transTypeTxt.setText(typeName != null ? typeName : "Unknown Type");
-
-                // Description
-                String description = rs.getString("Description");
-                dscTxt.setText(description != null && !description.trim().isEmpty() ? description : "No description");
-
-                // Default Cost
-                java.math.BigDecimal defaultCost = rs.getBigDecimal("DefaultCost");
-//                jLabel6.setText(defaultCost != null ? "₱" + defaultCost.toString() : "Not specified");
+                // Format default cost with peso sign
+                double defaultCost = type.getDefaultCost();
                 try {
                     // Load Poppins font (ensure it's available in your project or system)
-                    jLabel6.setFont(new java.awt.Font("Poppins", java.awt.Font.PLAIN, 12)); // Adjust size as needed
-                    jLabel6.setText(defaultCost != null ? "\u20B1" + String.format("%.2f", defaultCost) : "Not specified");
+                    jLabel6.setFont(new java.awt.Font("Poppins", java.awt.Font.PLAIN, 12));
+                    jLabel6.setText(defaultCost != 0 ? "\u20B1" + String.format("%.2f", defaultCost) : "Not specified");
                 } catch (Exception e) {
-                    // Fallback to a font that supports the peso sign if Poppins fails
+                    // Fallback to Arial if Poppins fails
                     jLabel6.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
-                    jLabel6.setText(defaultCost != null ? "\u20B1" + String.format("%.2f", defaultCost) : "Not specified");
+                    jLabel6.setText(defaultCost != 0 ? "\u20B1" + String.format("%.2f", defaultCost) : "Not specified");
                     e.printStackTrace();
                 }
 
@@ -254,45 +247,19 @@ public class FindTransactionByID extends javax.swing.JPanel {
                 resultModal.setVisible(true);
 
                 // Show success message
-                JOptionPane.showMessageDialog(this,
-                        "Transaction found successfully!",
-                        "Search Result",
-                        JOptionPane.INFORMATION_MESSAGE);
-
+                JOptionPane.showMessageDialog(this, "Transaction type found successfully!", "Search Result", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 // Transaction not found
-                JOptionPane.showMessageDialog(this,
-                        "No transaction found with ID: " + transactionId,
-                        "Transaction Not Found",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No transaction type found with ID: " + transactionId, "Not Found", JOptionPane.INFORMATION_MESSAGE);
                 findIDTxt.setText("");
-
-                // Hide result modal and clear previous results
                 resultModal.setVisible(false);
                 clearResults();
             }
-
-        } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Database error: " + e.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error retrieving transaction type: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-        } finally {
-            // Close database resources
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (java.sql.SQLException e) {
-                e.printStackTrace();
-            }
+            resultModal.setVisible(false);
+            clearResults();
         }
     }
 
@@ -306,6 +273,7 @@ public class FindTransactionByID extends javax.swing.JPanel {
     private javax.swing.JLabel dscTxt;
     private javax.swing.JTextField findIDTxt;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

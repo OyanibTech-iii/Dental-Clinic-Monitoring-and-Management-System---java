@@ -1,26 +1,29 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Click nbproject/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Admin
  */
-public class AddNewTransaction extends javax.swing.JPanel {
+public class AddNewTransaction extends javax.swing.JPanel implements TransactionTypeServiceAware {
+
+    private TransactionTypeService transactionTypeService;
 
     /**
      * Creates new form AddNewTransaction
      */
     public AddNewTransaction() {
         initComponents();
+    }
+
+    @Override
+    public void setTransactionTypeService(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
     }
 
     /**
@@ -84,7 +87,7 @@ public class AddNewTransaction extends javax.swing.JPanel {
         addTransBtn.setColor(new java.awt.Color(0, 51, 0));
         addTransBtn.setColorClick(new java.awt.Color(9, 37, 3));
         addTransBtn.setColorOver(new java.awt.Color(0, 102, 0));
-        addTransBtn.setFont(new java.awt.Font("Poppins Medium", 1, 12)); // NOI18N
+        addTransBtn.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
         addTransBtn.setRadius(10);
         addTransBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,10 +147,9 @@ public class AddNewTransaction extends javax.swing.JPanel {
 
     private void addTransBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addTransBtnActionPerformed
         // TODO add your handling code here:
-        //JOptionPane.showMessageDialog(this, "Testing lang");
         String typeName = transTypeNameTxt.getText().trim();
         String description = descriptionTxt.getText().trim();
-        String defaultCostText = jTextField1.getText().trim();
+        String defaultCostText =  jTextField1.getText().trim();
 
         // Validation
         if (typeName.isEmpty()) {
@@ -164,7 +166,7 @@ public class AddNewTransaction extends javax.swing.JPanel {
 
         if (defaultCostText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a default cost.", "Validation Error", JOptionPane.WARNING_MESSAGE);
-            jTextField1.requestFocus();
+          jTextField1.requestFocus();
             return;
         }
 
@@ -179,77 +181,48 @@ public class AddNewTransaction extends javax.swing.JPanel {
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid number for default cost.", "Validation Error", JOptionPane.WARNING_MESSAGE);
-            jTextField1.requestFocus();
+             jTextField1.requestFocus();
             return;
         }
 
-        // Database insertion
+        // Check if service is available
+        if (transactionTypeService == null) {
+            JOptionPane.showMessageDialog(this, "Transaction service is not available.", "Service Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Create TransactionType object
+        TransactionType newType = new TransactionType();
+        newType.setTypeName(typeName);
+        newType.setDescription(description);
+        newType.setDefaultCost(defaultCost);
+
+        // Save using service
         try {
-            Connection conn = DbConnection.connectToDb();
-            if (conn != null) {
-                // Check if transaction type name already exists
-                String checkQuery = "SELECT COUNT(*) FROM transactiontype WHERE TypeName = ?";
-                PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
-                checkStmt.setString(1, typeName);
-                ResultSet rs = checkStmt.executeQuery();
+            int result = transactionTypeService.saveTransactionType(newType);
+            if (result > 0) {
+                JOptionPane.showMessageDialog(this, "Transaction type added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                if (rs.next() && rs.getInt(1) > 0) {
-                    JOptionPane.showMessageDialog(this, "Transaction type name already exists. Please choose a different name.", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
-                    transTypeNameTxt.requestFocus();
-                    rs.close();
-                    checkStmt.close();
-                    conn.close();
-                    return;
+                // Clear the form fields
+                transTypeNameTxt.setText("");
+                descriptionTxt.setText("");
+                 jTextField1.setText("");
+
+                // Set focus back to the first field
+                transTypeNameTxt.requestFocus();
+
+                // Optional: Play success sound if MouseClick class is available
+                try {
+                    MouseClick.playClickSound();
+                } catch (Exception soundEx) {
+                    // Ignore if sound class is not available
                 }
-
-                rs.close();
-                checkStmt.close();
-
-                // Insert new transaction type
-                String insertQuery = "INSERT INTO transactiontype (TypeName, Description, DefaultCost) VALUES (?, ?, ?)";
-                PreparedStatement pst = conn.prepareStatement(insertQuery);
-                pst.setString(1, typeName);
-                pst.setString(2, description);
-                pst.setDouble(3, defaultCost);
-
-                int rowsAffected = pst.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Transaction type added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    // Clear the form fields
-                    transTypeNameTxt.setText("");
-                    descriptionTxt.setText("");
-                    jTextField1.setText("");
-
-                    // Set focus back to the first field
-                    transTypeNameTxt.requestFocus();
-
-                    // Optional: Play success sound if you have MouseClick class
-                    try {
-                        MouseClick.playClickSound();
-                    } catch (Exception soundEx) {
-                        // Ignore if sound class is not available
-                    }
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Failed to add transaction type. Please try again.", "Database Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-                // Close resources
-                pst.close();
-                conn.close();
-
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to connect to database.", "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to add transaction type. Type name may already exist.", "Save Failed", JOptionPane.WARNING_MESSAGE);
             }
-
-        } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Database error occurred: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "An unexpected error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error saving transaction type: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error saving transaction type: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_addTransBtnActionPerformed
 

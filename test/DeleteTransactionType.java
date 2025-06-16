@@ -10,7 +10,9 @@ import javax.swing.JOptionPane;
  *
  * @author Admin
  */
-public class DeleteTransactionType extends javax.swing.JPanel {
+public class DeleteTransactionType extends javax.swing.JPanel implements TransactionTypeServiceAware {
+
+    private TransactionTypeService transactionTypeService;
 
     /**
      * Creates new form DeleteTransactionType
@@ -18,6 +20,12 @@ public class DeleteTransactionType extends javax.swing.JPanel {
     public DeleteTransactionType() {
         initComponents();
         deleteResultModal.setVisible(false);
+        deleteBtn.setVisible(false);
+    }
+
+    @Override
+    public void setTransactionTypeService(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
     }
 
     /**
@@ -40,6 +48,7 @@ public class DeleteTransactionType extends javax.swing.JPanel {
         descDeleteResult = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         dcDeleteResult = new javax.swing.JLabel();
+        findTransactionBtn = new test.CustomButton();
 
         setBackground(new java.awt.Color(0, 119, 204));
         setMaximumSize(new java.awt.Dimension(452, 180));
@@ -137,33 +146,51 @@ public class DeleteTransactionType extends javax.swing.JPanel {
                 .addGroup(deleteResultModalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(dcDeleteResult))
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        findTransactionBtn.setBackground(new java.awt.Color(0, 51, 0));
+        findTransactionBtn.setBorder(null);
+        findTransactionBtn.setForeground(new java.awt.Color(255, 255, 255));
+        findTransactionBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchBtn.png"))); // NOI18N
+        findTransactionBtn.setText("Find Transaction");
+        findTransactionBtn.setBorderColor(new java.awt.Color(0, 51, 0));
+        findTransactionBtn.setColor(new java.awt.Color(0, 51, 0));
+        findTransactionBtn.setColorClick(new java.awt.Color(6, 30, 1));
+        findTransactionBtn.setColorOver(new java.awt.Color(0, 153, 0));
+        findTransactionBtn.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
+        findTransactionBtn.setRadius(10);
+        findTransactionBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findTransactionBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addGap(127, 127, 127)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(deleteResultModal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(14, 14, 14))
+                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(deleteResultModal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteIDTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(findTransactionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,204 +199,140 @@ public class DeleteTransactionType extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(findTransactionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(2, 2, 2)
                 .addComponent(deleteResultModal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addGap(33, 33, 33))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
-    MouseClick.playNotificationSound();
-    
-    if (deleteIDTxt.getText().trim().equals("")) {
-        JOptionPane.showMessageDialog(this, "Please Enter ID you want to delete");
-        return;
-    }
-    
-    // Validate that input is a number
-    int typeId;
-    try {
-        typeId = Integer.parseInt(deleteIDTxt.getText().trim());
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Please enter a valid numeric ID");
-        return;
-    }
-    
-    // Check if transaction type exists in database
-    java.sql.Connection connection = null;
-    java.sql.PreparedStatement pstmt = null;
-    java.sql.ResultSet rs = null;
-    
-    try {
-        connection = DbConnection.connectToDb();
-        
-        if (connection == null) {
-            JOptionPane.showMessageDialog(this, "Database connection failed!");
-            return;
-        }
-        
-        // Query to check if transaction type exists
-        String selectQuery = "SELECT TypeName, Description, DefaultCost FROM transactiontype WHERE TypeID = ?";
-        pstmt = connection.prepareStatement(selectQuery);
-        pstmt.setInt(1, typeId);
-        rs = pstmt.executeQuery();
-        
-        if (rs.next()) {
-            // Transaction type exists - display information
-            String typeName = rs.getString("TypeName");
-            String description = rs.getString("Description");
-            java.math.BigDecimal defaultCost = rs.getBigDecimal("DefaultCost");
-            
-            // Update the display labels
-            ttDeleteResult.setText(typeName);
-            descDeleteResult.setText(description != null ? description : "None");
-            dcDeleteResult.setText(defaultCost != null ? defaultCost.toString() : "None");
-            
-            // Show the result modal
-            deleteResultModal.setVisible(true);
-            
-            // Create confirmation dialog
-            javax.swing.JFrame parentFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-            
-            javax.swing.JOptionPane optionPane = new javax.swing.JOptionPane(
-                    "Are you sure you want to delete this transaction type?",
-                    javax.swing.JOptionPane.QUESTION_MESSAGE,
-                    javax.swing.JOptionPane.YES_NO_OPTION
-            );
-            
-            javax.swing.JDialog dialog = optionPane.createDialog(parentFrame, "Confirm Delete");
-            
-            // Position dialog at center-top of frame
-            if (parentFrame != null) {
-                int x = parentFrame.getX() + (parentFrame.getWidth() - dialog.getWidth()) / 2;
-                int y = parentFrame.getY() + 250;
-                dialog.setLocation(x, y);
-            }
-            
-            dialog.setVisible(true);
-            
-            // Get user's choice
-            Object result = optionPane.getValue();
-            int deleteChoice = (result != null && result.equals(javax.swing.JOptionPane.YES_OPTION))
-                    ? javax.swing.JOptionPane.YES_OPTION
-                    : javax.swing.JOptionPane.NO_OPTION;
-            
-            if (deleteChoice == javax.swing.JOptionPane.YES_OPTION) {
-                // Proceed with deletion
-                deleteTransactionType(typeId, parentFrame);
-            } else {
-                // User cancelled - hide modal
+      try {
+            // Get transaction type ID from text field
+            String typeIdText = deleteIDTxt.getText().trim();
+            if (typeIdText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a Transaction Type ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 deleteResultModal.setVisible(false);
-                // Clear the text field
-                deleteIDTxt.setText("");
+                return;
             }
-            
-        } else {
-            // Transaction type not found
-            JOptionPane.showMessageDialog(this, 
-                "No transaction type found with ID: " + typeId, 
-                "Transaction Type Not Found", 
-                JOptionPane.INFORMATION_MESSAGE);
-            deleteIDTxt.setText(""); // Clear the input field
-        }
-        
-    } catch (java.sql.SQLException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Database error: " + e.getMessage(), 
-            "Database Error", 
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } finally {
-        // Close database resources
-        try {
-            if (rs != null) rs.close();
-            if (pstmt != null) pstmt.close();
-            if (connection != null) connection.close();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    }//GEN-LAST:event_deleteBtnActionPerformed
-private void deleteTransactionType(int typeId, javax.swing.JFrame parentFrame) {
-    java.sql.Connection connection = null;
-    java.sql.PreparedStatement pstmt = null;
-    
-    try {
-        connection = DbConnection.connectToDb();
-        
-        if (connection == null) {
-            JOptionPane.showMessageDialog(this, "Database connection failed!");
-            return;
-        }
-        
-        // Check if there are any transactions using this type
-        String checkTransactionsQuery = "SELECT COUNT(*) FROM transaction WHERE TypeID = ?";
-        pstmt = connection.prepareStatement(checkTransactionsQuery);
-        pstmt.setInt(1, typeId);
-        java.sql.ResultSet rs = pstmt.executeQuery();
-        
-        if (rs.next() && rs.getInt(1) > 0) {
-            // There are existing transactions using this type
-            JOptionPane.showMessageDialog(parentFrame, 
-                "Cannot delete this transaction type because it is being used by existing transactions.", 
-                "Cannot Delete", 
-                JOptionPane.WARNING_MESSAGE);
+
+            int typeId;
+            try {
+                typeId = Integer.parseInt(typeIdText);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid Transaction Type ID format. Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            // Check if service is available
+            if (transactionTypeService == null) {
+                JOptionPane.showMessageDialog(this, "Transaction service is not available.", "Service Error", JOptionPane.ERROR_MESSAGE);
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            // Show confirmation dialog
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete transaction type with ID " + typeId + "?\nThis action cannot be undone.",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            // Proceed only if the user selects "Yes"
+            if (confirm != JOptionPane.YES_OPTION) {
+                return; // User canceled, keep modal visible
+            }
+
+            // Proceed with deletion
+            int rowsAffected = transactionTypeService.deleteTransactionType(typeId);
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Transaction type with ID " + typeId + " deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                // Refresh the parent table
+                if (getParent() instanceof TransactionTypePage) {
+                    ((TransactionTypePage) getParent()).viewAllTransactionType();
+                }
+                // Play success sound
+                MouseClick.playNotificationSound();
+                // Clear input and hide modal
+                deleteIDTxt.setText("");
+                ttDeleteResult.setText("None");
+                descDeleteResult.setText("None");
+                dcDeleteResult.setText("None");
+                deleteResultModal.setVisible(false);
+                deleteBtn.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Cannot delete this transaction type because it is being used by existing transactions or does not exist.", "Cannot Delete", JOptionPane.WARNING_MESSAGE);
+                deleteResultModal.setVisible(false);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error processing deletion: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             deleteResultModal.setVisible(false);
             deleteIDTxt.setText("");
-            return;
         }
-        
-        rs.close();
-        pstmt.close();
-        
-        // Proceed with deletion
-        String deleteQuery = "DELETE FROM transactiontype WHERE TypeID = ?";
-        pstmt = connection.prepareStatement(deleteQuery);
-        pstmt.setInt(1, typeId);
-        
-        int rowsAffected = pstmt.executeUpdate();
-        
-        if (rowsAffected > 0) {
-            JOptionPane.showMessageDialog(parentFrame, 
-                "Transaction type deleted successfully!", 
-                "Success", 
-                JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(parentFrame, 
-                "Failed to delete transaction type.", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void findTransactionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findTransactionBtnActionPerformed
+        // TODO add your handling code here:
+       try {
+            // Get transaction type ID from text field
+            String typeIdText = deleteIDTxt.getText().trim();
+            if (typeIdText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a Transaction Type ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            int typeId;
+            try {
+                typeId = Integer.parseInt(typeIdText);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid Transaction Type ID format. Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            // Check if service is available
+            if (transactionTypeService == null) {
+                JOptionPane.showMessageDialog(this, "Transaction service is not available.", "Service Error", JOptionPane.ERROR_MESSAGE);
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            // Fetch transaction type
+            TransactionType type = transactionTypeService.getTransactionType(typeId);
+
+            if (type == null) {
+                JOptionPane.showMessageDialog(this, "No transaction type found with ID: " + typeId, "Not Found", JOptionPane.ERROR_MESSAGE);
+                // Clear the display labels and hide the modal
+                ttDeleteResult.setText("None");
+                descDeleteResult.setText("None");
+                dcDeleteResult.setText("None");
+                deleteResultModal.setVisible(false);
+                return;
+            }
+
+            // Update UI with transaction type details and show the modal
+            ttDeleteResult.setText(type.getTypeName() != null ? type.getTypeName() : "N/A");
+            descDeleteResult.setText(type.getDescription() != null ? type.getDescription() : "N/A");
+            dcDeleteResult.setText(type.getDefaultCost() != 0 ? String.format("%.2f", type.getDefaultCost()) : "N/A");
+            deleteResultModal.setVisible(true);
+            deleteBtn.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error retrieving transaction type: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            deleteResultModal.setVisible(false);
+            deleteBtn.setVisible(false);
         }
-        
-        // Hide modal and clear input
-        deleteResultModal.setVisible(false);
-        deleteIDTxt.setText("");
-        
-        // Reset the display labels
-        ttDeleteResult.setText("None");
-        descDeleteResult.setText("None");
-        dcDeleteResult.setText("None");
-        
-    } catch (java.sql.SQLException e) {
-        JOptionPane.showMessageDialog(parentFrame, 
-            "Database error during deletion: " + e.getMessage(), 
-            "Database Error", 
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-        deleteResultModal.setVisible(false);
-    } finally {
-        try {
-            if (pstmt != null) pstmt.close();
-            if (connection != null) connection.close();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-    }
-}
+    }//GEN-LAST:event_findTransactionBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel dcDeleteResult;
@@ -377,6 +340,7 @@ private void deleteTransactionType(int typeId, javax.swing.JFrame parentFrame) {
     private javax.swing.JTextField deleteIDTxt;
     private javax.swing.JPanel deleteResultModal;
     private javax.swing.JLabel descDeleteResult;
+    private test.CustomButton findTransactionBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

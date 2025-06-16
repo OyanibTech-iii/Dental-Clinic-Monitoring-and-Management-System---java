@@ -5,18 +5,23 @@
 package test;
 
 import javax.swing.JOptionPane;
+import java.text.SimpleDateFormat;
 
-/**
- *
- * @author Admin
- */
-public class DeletePatient extends javax.swing.JPanel {
+public class DeletePatient extends javax.swing.JPanel implements PatientServiceAware {
+
+    private PatientService patientService;
 
     /**
      * Creates new form DeletePatient
      */
     public DeletePatient() {
         initComponents();
+        deletePanel.setVisible(false);
+    }
+
+    @Override
+    public void setPatientService(PatientService patientService) {
+        this.patientService = patientService;
     }
 
     /**
@@ -31,6 +36,20 @@ public class DeletePatient extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         deleteIDTxt = new javax.swing.JTextField();
+        findPatientBtn = new test.CustomButton();
+        deletePanel = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
         deletePatientBtn = new test.CustomButton();
 
         setBackground(new java.awt.Color(0, 119, 204));
@@ -44,22 +63,90 @@ public class DeletePatient extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Enter Patient ID to delete: ");
+        jLabel2.setText("Enter Patient ID to Delete: ");
 
         deleteIDTxt.setBackground(new java.awt.Color(0, 119, 204));
         deleteIDTxt.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         deleteIDTxt.setForeground(new java.awt.Color(255, 255, 255));
         deleteIDTxt.setBorder(null);
 
+        findPatientBtn.setBackground(new java.awt.Color(0, 51, 0));
+        findPatientBtn.setBorder(null);
+        findPatientBtn.setForeground(new java.awt.Color(255, 255, 255));
+        findPatientBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchBtn.png"))); // NOI18N
+        findPatientBtn.setText("Find Patient");
+        findPatientBtn.setBorderColor(new java.awt.Color(0, 51, 0));
+        findPatientBtn.setColor(new java.awt.Color(0, 51, 0));
+        findPatientBtn.setColorClick(new java.awt.Color(3, 29, 10));
+        findPatientBtn.setColorOver(new java.awt.Color(0, 102, 0));
+        findPatientBtn.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
+        findPatientBtn.setRadius(10);
+        findPatientBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findPatientBtnActionPerformed(evt);
+            }
+        });
+
+        deletePanel.setOpaque(false);
+
+        jLabel3.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Name:");
+
+        jLabel4.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Name Container");
+
+        jLabel5.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Age:");
+
+        jLabel6.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Age Container");
+
+        jLabel7.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Email Container");
+
+        jLabel8.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel8.setText("Email:");
+
+        jLabel9.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("Birthdate:");
+
+        jLabel10.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Bday Container");
+
+        jLabel11.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("Adress Container");
+
+        jLabel12.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setText("Adress:");
+
+        jLabel13.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("Contact:");
+
+        jLabel14.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("No. Container");
+
         deletePatientBtn.setBackground(new java.awt.Color(0, 51, 0));
+        deletePatientBtn.setBorder(null);
         deletePatientBtn.setForeground(new java.awt.Color(255, 255, 255));
         deletePatientBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/deleteBtn.png"))); // NOI18N
-        deletePatientBtn.setText("Delete");
+        deletePatientBtn.setText("DELETE");
         deletePatientBtn.setBorderColor(new java.awt.Color(0, 51, 0));
         deletePatientBtn.setColor(new java.awt.Color(0, 51, 0));
         deletePatientBtn.setColorClick(new java.awt.Color(3, 29, 10));
         deletePatientBtn.setColorOver(new java.awt.Color(0, 102, 0));
-        deletePatientBtn.setFont(new java.awt.Font("Poppins Medium", 1, 12)); // NOI18N
+        deletePatientBtn.setFont(new java.awt.Font("Poppins Medium", 0, 12)); // NOI18N
         deletePatientBtn.setRadius(10);
         deletePatientBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,27 +154,87 @@ public class DeletePatient extends javax.swing.JPanel {
             }
         });
 
+        javax.swing.GroupLayout deletePanelLayout = new javax.swing.GroupLayout(deletePanel);
+        deletePanel.setLayout(deletePanelLayout);
+        deletePanelLayout.setHorizontalGroup(
+            deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(deletePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(deletePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(deletePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(deletePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(deletePatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(deletePanelLayout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        deletePanelLayout.setVerticalGroup(
+            deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(deletePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(deletePatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(154, 154, 154))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(deletePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(95, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(168, 168, 168))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(deletePatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19))))))
+                        .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(findPatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -95,30 +242,141 @@ public class DeletePatient extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(findPatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(deleteIDTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
-                .addComponent(deletePatientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deletePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void findPatientBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findPatientBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+            // Get patient ID from text field
+            String patientIDText = deleteIDTxt.getText().trim();
+            if (patientIDText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a Patient ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                deletePanel.setVisible(false);
+                return;
+            }
+
+            int patientID = Integer.parseInt(patientIDText);
+            Patient patient = patientService.getPatient(patientID);
+
+            if (patient == null) {
+                JOptionPane.showMessageDialog(this, "No patient found with ID: " + patientID, "Patient Not Found", JOptionPane.ERROR_MESSAGE);
+                // Clear the display labels and hide the panel
+                jLabel4.setText("Name Container");
+                jLabel6.setText("Age Container");
+                jLabel7.setText("Email Container");
+                jLabel10.setText("Bday Container");
+                jLabel11.setText("Address Container");
+                jLabel14.setText("No. Container");
+                deletePanel.setVisible(false);
+                return;
+            }
+
+            // Update UI with patient details and show the panel
+            String fullName = (patient.getFirstName() != null ? patient.getFirstName() : "") + " "
+                    + (patient.getMiddleName() != null ? patient.getMiddleName() : "") + " "
+                    + (patient.getLastName() != null ? patient.getLastName() : "");
+            jLabel4.setText(fullName.trim());
+            jLabel6.setText(String.valueOf(patient.getAge()));
+            jLabel7.setText(patient.getEmail() != null ? patient.getEmail() : "N/A");
+            jLabel10.setText(patient.getBirthdate() != null ? new SimpleDateFormat("yyyy-MM-dd").format(patient.getBirthdate()) : "N/A");
+            jLabel11.setText(patient.getAddress() != null ? patient.getAddress() : "N/A");
+            jLabel14.setText(patient.getContactNumber() != null ? patient.getContactNumber() : "N/A");
+            deletePanel.setVisible(true);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid Patient ID format. Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            deletePanel.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error retrieving patient: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            deletePanel.setVisible(false);
+        }
+    }//GEN-LAST:event_findPatientBtnActionPerformed
+
     private void deletePatientBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePatientBtnActionPerformed
         // TODO add your handling code here:
-        if(deleteIDTxt.getText().equals("")){
-               JOptionPane.showMessageDialog(this,"Input a number to delete");
+        try {
+            // Get patient ID from text field
+            String patientIDText = deleteIDTxt.getText().trim();
+            if (patientIDText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a Patient ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                deletePanel.setVisible(false);
+                return;
+            }
+
+            int patientID = Integer.parseInt(patientIDText);
+
+            // Show confirmation dialog
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete patient with ID " + patientID + "?\nThis action cannot be undone.",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            // Proceed only if the user selects "Yes"
+            if (confirm != JOptionPane.YES_OPTION) {
+                return; // User canceled, keep panel visible
+            }
+
+            int result = patientService.deletePatient(patientID);
+
+            if (result > 0) {
+                JOptionPane.showMessageDialog(this, "Patient with ID " + patientID + " deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                // Clear the text field, display labels, and hide the panel
+                deleteIDTxt.setText("");
+                jLabel4.setText("Name Container");
+                jLabel6.setText("Age Container");
+                jLabel7.setText("Email Container");
+                jLabel10.setText("Bday Container");
+                jLabel11.setText("Address Container");
+                jLabel14.setText("No. Container");
+                deletePanel.setVisible(false);
+
+                // Refresh the patient table in PatientManagement
+                if (getParent() instanceof PatientManagement) {
+                    ((PatientManagement) getParent()).refreshPatientTable();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "No patient found with ID: " + patientID, "Delete Failed", JOptionPane.ERROR_MESSAGE);
+                deletePanel.setVisible(false);
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid Patient ID format. Please enter a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            deletePanel.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error deleting patient: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            deletePanel.setVisible(false);
         }
-        else{
-               JOptionPane.showMessageDialog(this,"Deleted Succefully");
-        }
-     
     }//GEN-LAST:event_deletePatientBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField deleteIDTxt;
+    private javax.swing.JPanel deletePanel;
     private test.CustomButton deletePatientBtn;
+    private test.CustomButton findPatientBtn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     // End of variables declaration//GEN-END:variables
 }

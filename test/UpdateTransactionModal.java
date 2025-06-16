@@ -4,37 +4,85 @@
  */
 package test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Admin
  */
-public class UpdateTransactionModal extends javax.swing.JPanel {
+public class UpdateTransactionModal extends javax.swing.JPanel implements TransactionTypeServiceAware {
 
-    private int currentTypeID = -1;
+    private TransactionTypeService transactionTypeService;
+    private int typeID;
 
-    /**
-     * Creates new form UpdateTransactionModal
-     */
     public UpdateTransactionModal() {
         initComponents();
+        addPlaceholderListeners();
     }
 
-    public void setTransactionData(String transType, String desc, String cost, int typeID) {
-        // Set the text fields with current data instead of "NONE"
-        this.currentTypeID = typeID;
-        transTypeUpdate.setText(transType);
-        descUpdate.setText(desc);
-        costUpdate.setText(cost);
+    @Override
+    public void setTransactionTypeService(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
+    }
 
-        // Update the labels to show current values instead of [NONE]
+    // Set transaction data in the form fields
+    public void setTransactionData(String transType, String desc, String cost, int typeID) {
+        this.typeID = typeID;
+        transTypeUpdate.setText(transType.isEmpty() ? "Type Container" : transType);
+        descUpdate.setText(desc.isEmpty() ? "Description Container" : desc);
+        costUpdate.setText(cost.isEmpty() ? "Cost Container" : cost);
+
         jLabel1.setText("Transaction Type [" + (transType.isEmpty() ? "NONE" : transType) + "]:");
         jLabel2.setText("Description [" + (desc.isEmpty() ? "NONE" : desc) + "]:");
         jLabel3.setText("Default Cost [" + (cost.isEmpty() ? "NONE" : "₱" + cost) + "]:");
+    }
+
+    // Getter methods for form fields
+    public String getTransactionType() {
+        String text = transTypeUpdate.getText().trim();
+        return text.equals("Type Container") ? "" : text;
+    }
+
+    public String getDescription() {
+        String text = descUpdate.getText().trim();
+        return text.equals("Description Container") ? "" : text;
+    }
+
+    public String getDefaultCost() {
+        String text = costUpdate.getText().trim();
+        return text.equals("Cost Container") ? "" : text;
+    }
+
+    // Add focus listeners to clear placeholder text
+    private void addPlaceholderListeners() {
+        transTypeUpdate.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (transTypeUpdate.getText().equals("Type Container")) {
+                    transTypeUpdate.setText("");
+                }
+            }
+        });
+
+        descUpdate.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (descUpdate.getText().equals("Description Container")) {
+                    descUpdate.setText("");
+                }
+            }
+        });
+
+        costUpdate.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (costUpdate.getText().equals("Cost Container")) {
+                    costUpdate.setText("");
+                }
+            }
+        });
     }
 
     /**
@@ -61,18 +109,18 @@ public class UpdateTransactionModal extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(327, 100));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Transaction Type [NONE]:");
+        jLabel1.setText("Transaction Type :");
 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Description [NONE]:");
+        jLabel2.setText("Description :");
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Default Cost [NONE]:");
+        jLabel3.setText("Default Cost :");
 
         updateBtn.setBackground(new java.awt.Color(0, 51, 0));
         updateBtn.setForeground(new java.awt.Color(255, 255, 255));
         updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/updateBtn.png"))); // NOI18N
-        updateBtn.setText("Update Details");
+        updateBtn.setText("Save Changes");
         updateBtn.setBorderColor(new java.awt.Color(0, 51, 0));
         updateBtn.setColor(new java.awt.Color(0, 51, 0));
         updateBtn.setColorClick(new java.awt.Color(3, 29, 5));
@@ -88,16 +136,19 @@ public class UpdateTransactionModal extends javax.swing.JPanel {
         transTypeUpdate.setBackground(new java.awt.Color(0, 119, 204));
         transTypeUpdate.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         transTypeUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        transTypeUpdate.setText("Type Container");
         transTypeUpdate.setBorder(null);
 
         descUpdate.setBackground(new java.awt.Color(0, 119, 204));
         descUpdate.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         descUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        descUpdate.setText("Description Container");
         descUpdate.setBorder(null);
 
         costUpdate.setBackground(new java.awt.Color(0, 119, 204));
         costUpdate.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         costUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        costUpdate.setText("Cost Container");
         costUpdate.setBorder(null);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -110,10 +161,7 @@ public class UpdateTransactionModal extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transTypeUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(transTypeUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -121,7 +169,8 @@ public class UpdateTransactionModal extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(descUpdate))))
+                        .addComponent(descUpdate))
+                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,82 +194,91 @@ public class UpdateTransactionModal extends javax.swing.JPanel {
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
         // TODO add your handling code here:
-        updateTransactionType();
-    }//GEN-LAST:event_updateBtnActionPerformed
-    private void updateTransactionType() {
-        String newTransType = transTypeUpdate.getText().trim();
-        String newDesc = descUpdate.getText().trim();
-        String newCost = costUpdate.getText().trim();
+        MouseClick.playClickSound();
+        String typeName = getTransactionType();
+        String description = getDescription();
+        String defaultCostText = getDefaultCost();
 
-        // Validate input
-        if (newTransType.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Transaction Type cannot be empty!", "Input Error", JOptionPane.ERROR_MESSAGE);
+        // Validation
+        if (typeName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a transaction type name.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            transTypeUpdate.requestFocus();
             return;
         }
 
-        if (currentTypeID == -1) {
-            JOptionPane.showMessageDialog(this, "No transaction type selected for update!", "Error", JOptionPane.ERROR_MESSAGE);
+        if (description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a description.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            descUpdate.requestFocus();
             return;
         }
 
-        // Validate cost if provided
-        if (!newCost.isEmpty()) {
-            try {
-                Double.parseDouble(newCost);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid cost amount!", "Input Error", JOptionPane.ERROR_MESSAGE);
+        if (defaultCostText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a default cost.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            costUpdate.requestFocus();
+            return;
+        }
+
+        // Validate default cost is a valid number
+        double defaultCost;
+        try {
+            defaultCost = Double.parseDouble(defaultCostText);
+            if (defaultCost < 0) {
+                JOptionPane.showMessageDialog(this, "Default cost cannot be negative.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+                costUpdate.requestFocus();
                 return;
             }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number for default cost.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            costUpdate.requestFocus();
+            return;
         }
 
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        // Check if service is available
+        if (transactionTypeService == null) {
+            JOptionPane.showMessageDialog(this, "Transaction service is not available.", "Service Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        // Create TransactionType object
+        TransactionType updatedType = new TransactionType();
+        updatedType.setTypeID(typeID);
+        updatedType.setTypeName(typeName);
+        updatedType.setDescription(description);
+        updatedType.setDefaultCost(defaultCost);
+
+        // Update using service
         try {
-            conn = DbConnection.connectToDb();
+            int result = transactionTypeService.updateTransactionType(updatedType);
+            if (result > 0) {
+                JOptionPane.showMessageDialog(this, "Transaction type updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            String sql = "UPDATE transactiontype SET TypeName = ?, Description = ?, DefaultCost = ? WHERE TypeID = ?";
-            pstmt = conn.prepareStatement(sql);
+                // Clear the form fields
+                transTypeUpdate.setText("Type Container");
+                descUpdate.setText("Description Container");
+                costUpdate.setText("Cost Container");
 
-            pstmt.setString(1, newTransType);
-            pstmt.setString(2, newDesc.isEmpty() ? null : newDesc);
+                // Refresh the parent table
+                if (getParent() instanceof UpdateTransactionType) {
+                    ((UpdateTransactionType) getParent()).viewAllTransactionType();
+                }
 
-            // Handle cost - set to null if empty, otherwise parse as decimal
-            if (newCost.isEmpty()) {
-                pstmt.setNull(3, java.sql.Types.DECIMAL);
-            } else {
-                pstmt.setBigDecimal(3, new java.math.BigDecimal(newCost));
-            }
-
-            pstmt.setInt(4, currentTypeID); // This was missing in the original code!
-
-            int rowsAffected = pstmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Transaction Type updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                // Hide this modal and refresh the parent
+                // Hide the modal
                 this.setVisible(false);
-            }
 
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
+                // Play success sound
+                try {
+                    MouseClick.playClickSound();
+                } catch (Exception soundEx) {
+                    // Ignore if sound class is not available
                 }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to update transaction type. ID may not exist.", "Update Failed", JOptionPane.WARNING_MESSAGE);
             }
-        }
+        } catch (Exception e) {
+            System.err.println("Error updating transaction type: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error updating transaction type: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+    }//GEN-LAST:event_updateBtnActionPerformed
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -4,25 +4,33 @@
  */
 package test;
 
-/**
- *
- * @author Admin
- */
-public class UpdateTransactionType extends javax.swing.JPanel {
+import javax.swing.JOptionPane;
 
-    /**
-     * Creates new form UpdateTransactionType
-     */
+public class UpdateTransactionType extends javax.swing.JPanel implements TransactionTypeServiceAware {
+
     private String currentTransType = "";
     private String currentDesc = "";
     private String currentCost = "";
     private int currentTypeID = -1;
     private UpdateTransactionModal updateModal = null;
+    private TransactionTypeService transactionTypeService; // Service injected via interface
 
+    // Modified constructor
     public UpdateTransactionType() {
         initComponents();
         resultModal.setVisible(false);
         editBtn.setVisible(false);
+    }
+
+    @Override
+    public void setTransactionTypeService(TransactionTypeService transactionTypeService) {
+        this.transactionTypeService = transactionTypeService;
+    }
+
+    public void viewAllTransactionType() {
+        if (getParent() instanceof TransactionTypePage) {
+            ((TransactionTypePage) getParent()).viewAllTransactionType();
+        }
     }
 
     /**
@@ -222,10 +230,10 @@ public class UpdateTransactionType extends javax.swing.JPanel {
 
         // Validate input
         if (inputID.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                     "Please enter a Transaction Type ID to search.",
                     "Input Required",
-                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -234,41 +242,23 @@ public class UpdateTransactionType extends javax.swing.JPanel {
         try {
             typeID = Integer.parseInt(inputID);
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(this,
                     "Please enter a valid numeric Transaction Type ID.",
                     "Invalid Input",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Database connection and search
-        java.sql.Connection conn = null;
-        java.sql.PreparedStatement pstmt = null;
-        java.sql.ResultSet rs = null;
-
         try {
-            // Establish database connection using DbConnection class
-            conn = DbConnection.connectToDb();
+            // Use service to fetch transaction type
+            TransactionType type = transactionTypeService.getTransactionType(typeID);
 
-            // Prepare SQL query
-            String sql = "SELECT TypeID, TypeName, Description, DefaultCost FROM transactiontype WHERE TypeID = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, typeID);
-
-            // Execute query
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
+            if (type != null) {
                 // Transaction type found - populate the result modal
-                String typeName = rs.getString("TypeName");
-                String description = rs.getString("Description");
-                java.math.BigDecimal defaultCost = rs.getBigDecimal("DefaultCost");
-
-                // Store current data in instance variables
-                currentTypeID = typeID;
-                currentTransType = typeName != null ? typeName : "";
-                currentDesc = description != null ? description : "";
-                currentCost = defaultCost != null ? defaultCost.toString() : "";
+                currentTypeID = type.getTypeID();
+                currentTransType = type.getTypeName() != null ? type.getTypeName() : "";
+                currentDesc = type.getDescription() != null ? type.getDescription() : "";
+                currentCost = type.getDefaultCost() != 0 ? String.valueOf(type.getDefaultCost()) : "";
 
                 // Set the labels with retrieved data
                 transType.setText(currentTransType.isEmpty() ? "None" : currentTransType);
@@ -282,13 +272,12 @@ public class UpdateTransactionType extends javax.swing.JPanel {
                 // Refresh the panel
                 this.revalidate();
                 this.repaint();
-
             } else {
-                // No transaction type found with the given ID
-                javax.swing.JOptionPane.showMessageDialog(this,
+                // No transaction type found
+                JOptionPane.showMessageDialog(this,
                         "No Transaction Type found with ID: " + typeID,
                         "Not Found",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 // Hide the result modal and edit button
                 resultModal.setVisible(false);
@@ -298,44 +287,13 @@ public class UpdateTransactionType extends javax.swing.JPanel {
                 this.revalidate();
                 this.repaint();
             }
-
-        } catch (java.sql.SQLException e) {
-            // Handle database errors
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Database Error: " + e.getMessage(),
-                    "Database Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-
-            // Hide the result modal and edit button on error
-            resultModal.setVisible(false);
-            editBtn.setVisible(false);
-
         } catch (Exception e) {
-            // Handle other errors
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "An error occurred: " + e.getMessage(),
+            JOptionPane.showMessageDialog(this,
+                    "Error retrieving transaction type: " + e.getMessage(),
                     "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-
-            // Hide the result modal and edit button on error
+                    JOptionPane.ERROR_MESSAGE);
             resultModal.setVisible(false);
             editBtn.setVisible(false);
-
-        } finally {
-            // Close database resources
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (java.sql.SQLException e) {
-                System.err.println("Error closing database resources: " + e.getMessage());
-            }
         }
     }//GEN-LAST:event_searchIDActionPerformed
 
@@ -348,13 +306,12 @@ public class UpdateTransactionType extends javax.swing.JPanel {
 
         // Create the update modal panel with current data
         updateModal = new UpdateTransactionModal();
+        updateModal.setTransactionTypeService(transactionTypeService); // Pass the service
 
         // Set the current values in the update modal text fields
-        // FIXED: Now passing the TypeID as well
         updateModal.setTransactionData(currentTransType, currentDesc, currentCost, currentTypeID);
 
         // Add the update modal to the same location as resultModal
-        // Get the bounds of resultModal
         java.awt.Rectangle bounds = resultModal.getBounds();
         updateModal.setBounds(bounds);
 

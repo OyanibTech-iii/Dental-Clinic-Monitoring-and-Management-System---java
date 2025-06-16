@@ -4,26 +4,29 @@
  */
 package test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author Admin
  */
+public class AddPatientPanel extends javax.swing.JPanel implements PatientServiceAware {
 
-public class AddPatientPanel extends javax.swing.JPanel {
+    private PatientService patientService;
 
     /**
-     * Creates new form addPatientPanel
+     * Creates new form AddPatientPanel
      */
     public AddPatientPanel() {
         initComponents();
     }
 
+    @Override
+    public void setPatientService(PatientService patientService) {
+        this.patientService = patientService;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -143,11 +146,6 @@ public class AddPatientPanel extends javax.swing.JPanel {
         emailTxt.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
         emailTxt.setForeground(new java.awt.Color(255, 255, 255));
         emailTxt.setBorder(null);
-        emailTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailTxtActionPerformed(evt);
-            }
-        });
 
         lastnameTxt.setBackground(new java.awt.Color(0, 119, 204));
         lastnameTxt.setFont(new java.awt.Font("Poppins Light", 0, 12)); // NOI18N
@@ -258,134 +256,92 @@ public class AddPatientPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void emailTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_emailTxtActionPerformed
-
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
-if (nameTxt.getText().trim().isEmpty() || lastnameTxt.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "First Name and Last Name are required fields.", 
-                "Validation Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        try {
+            // Validate input fields
+            String firstName = nameTxt.getText().trim();
+            String middleName = middleTxt.getText().trim();
+            String lastName = lastnameTxt.getText().trim();
+            String ageStr = ageTxt.getText().trim();
+            String address = addressTxt.getText().trim();
+            String birthdateStr = bdateTxt.getText().trim();
+            String contact = contactTxt.getText().trim();
+            String email = emailTxt.getText().trim();
 
-        // Validate birthdate format
-        String birthdateStr = bdateTxt.getText().trim();
-        if (!birthdateStr.isEmpty()) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            dateFormat.setLenient(false);
-            try {
-                dateFormat.parse(birthdateStr);
-            } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, 
-                    "Invalid birthdate format. Please use yyyy-MM-dd.", 
-                    "Validation Error", 
-                    JOptionPane.ERROR_MESSAGE);
+            // Check for required fields
+            if (firstName.isEmpty() || lastName.isEmpty() || ageStr.isEmpty() || address.isEmpty() || birthdateStr.isEmpty() || contact.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill in all required fields (except Middle Name and Email).", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        }
 
-        // Validate age if provided
-        String ageStr = ageTxt.getText().trim();
-        if (!ageStr.isEmpty()) {
+            // Parse age
+            int age;
             try {
-                int age = Integer.parseInt(ageStr);
-                if (age < 0 || age > 150) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Please enter a valid age (0-150).", 
-                        "Validation Error", 
-                        JOptionPane.ERROR_MESSAGE);
+                age = Integer.parseInt(ageStr);
+                if (age <= 0) {
+                    JOptionPane.showMessageDialog(this, "Age must be a positive number.", "Input Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, 
-                    "Age must be a valid number.", 
-                    "Validation Error", 
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Age must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        }
 
-        // Validate email format if provided
-        String email = emailTxt.getText().trim();
-        if (!email.isEmpty() && !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            JOptionPane.showMessageDialog(this, 
-                "Invalid email format.", 
-                "Validation Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            // Parse birthdate
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            java.util.Date birthdate;
+            try {
+                birthdate = sdf.parse(birthdateStr);
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(this, "Birthdate must be in yyyy-MM-dd format.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        // Validate contact number if provided
-        String contact = contactTxt.getText().trim();
-        if (!contact.isEmpty() && !contact.matches("^[0-9]{10,15}$")) {
-            JOptionPane.showMessageDialog(this, 
-                "Contact number must be 10-15 digits.", 
-                "Validation Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            // Validate email (basic check)
+            if (!email.isEmpty() && !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid email address.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        try {
-            Connection conn = DbConnection.connectToDb();
-            if (conn != null) {
-                String query = "INSERT INTO patient (FirstName, MiddleName, LastName, Age, Address, Birthdate, ContactNumber, Email) " +
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement pst = conn.prepareStatement(query);
-                
-                // Set parameters
-                pst.setString(1, nameTxt.getText().trim());
-                pst.setString(2, middleTxt.getText().trim().isEmpty() ? null : middleTxt.getText().trim());
-                pst.setString(3, lastnameTxt.getText().trim());
-                pst.setString(4, ageStr.isEmpty() ? null : ageStr);
-                pst.setString(5, addressTxt.getText().trim().isEmpty() ? null : addressTxt.getText().trim());
-                pst.setString(6, birthdateStr.isEmpty() ? null : birthdateStr);
-                pst.setString(7, contact.isEmpty() ? null : contact);
-                pst.setString(8, email.isEmpty() ? null : email);
+            // Create Patient object
+            Patient patient = new Patient();
+            patient.setFirstName(firstName);
+            patient.setMiddleName(middleName.isEmpty() ? null : middleName);
+            patient.setLastName(lastName);
+            patient.setAge(age);
+            patient.setAddress(address);
+            patient.setBirthdate(birthdate);
+            patient.setContactNumber(contact);
+            patient.setEmail(email.isEmpty() ? null : email);
 
-                // Execute insert
-                int rowsAffected = pst.executeUpdate();
-                
-                // Close resources
-                pst.close();
-                conn.close();
+            // Save patient using PatientService
+            int result = patientService.savePatient(patient);
+            if (result > 0) {
+                JOptionPane.showMessageDialog(this, "Patient added successfully with ID: " + patient.getPatientID(), "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Patient added successfully!", 
-                        "Success", 
-                        JOptionPane.INFORMATION_MESSAGE);
-                    
-                    // Clear form fields after successful submission
-                    nameTxt.setText("");
-                    middleTxt.setText("");
-                    lastnameTxt.setText("");
-                    ageTxt.setText("");
-                    addressTxt.setText("");
-                    bdateTxt.setText("");
-                    contactTxt.setText("");
-                    emailTxt.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(this, 
-                        "Failed to add patient.", 
-                        "Error", 
-                        JOptionPane.ERROR_MESSAGE);
+                // Clear form fields
+                nameTxt.setText("");
+                middleTxt.setText("");
+                lastnameTxt.setText("");
+                ageTxt.setText("");
+                addressTxt.setText("");
+                bdateTxt.setText("");
+                contactTxt.setText("");
+                emailTxt.setText("");
+
+                // Refresh patient table if part of PatientManagement
+                if (getParent() instanceof PatientManagement) {
+                    ((PatientManagement) getParent()).refreshPatientTable();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, 
-                    "Failed to connect to database.", 
-                    "Database Error", 
-                    JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to add patient.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error adding patient: " + e.getMessage(), 
-                "Database Error", 
-                JOptionPane.ERROR_MESSAGE);
-        }        // TODO add your handling code here:
-        
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error adding patient: " + e.getMessage());
+        }
     }//GEN-LAST:event_submitBtnActionPerformed
 
 
